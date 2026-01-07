@@ -72,12 +72,12 @@ python src/evaluate_transforms.py --dataset etl
 
 Run only the LLM embedding dataset:
 ```bash
-python src/evaluate_transforms.py --dataset llm_embedding
+python src/evaluate_transforms.py --dataset llm_api
 ```
 
 Run multiple datasets:
 ```bash
-python src/evaluate_transforms.py --dataset etl --dataset llm_embedding
+python src/evaluate_transforms.py --dataset etl --dataset llm_api
 ```
 
 ### Using Custom Models
@@ -89,13 +89,13 @@ Specify custom models for each provider:
 python src/evaluate_transforms.py --openai-model gpt-5.1-codex-mini --dataset etl
 
 # Use a specific Google model
-python src/evaluate_transforms.py --google-model gemini-3-flash-preview --dataset llm_embedding
+python src/evaluate_transforms.py --google-model gemini-3-flash-preview --dataset llm_api
 
 # Use a specific Anthropic model
 python src/evaluate_transforms.py --anthropic-model claude-haiku-4-5 --dataset etl
 
 # Combine multiple models
-python src/evaluate_transforms.py --openai-model gpt-5.1-codex-mini --google-model gemini-3-flash-preview --dataset etl --dataset llm_embedding
+python src/evaluate_transforms.py --openai-model gpt-5.1-codex-mini --google-model gemini-3-flash-preview --dataset etl --dataset llm_api
 ```
 
 ### Web Search Configuration
@@ -115,16 +115,16 @@ Or use the legacy flag:
 python src/evaluate_transforms.py --no-web-search
 ```
 
-**Note**: Web search is automatically enabled for `llm_embedding` dataset tasks that require API documentation lookup, even if disabled globally.
+**Note**: Web search is automatically enabled for `llm_api` dataset tasks that require API documentation lookup, even if disabled globally.
 
 ### Example Commands
 
 ```bash
 # Run both datasets with no web search for a specific OpenAI model
-python src/evaluate_transforms.py --openai-model gpt-5.1-codex-mini --dataset etl --dataset llm_embedding --web-search no
+python src/evaluate_transforms.py --openai-model gpt-5.1-codex-mini --dataset etl --dataset llm_api --web-search no
 
-# Run llm_embedding dataset with web search for a specific OpenAI model
-python src/evaluate_transforms.py --openai-model gpt-5.2-codex-mini --dataset llm_embedding --web-search yes
+# Run llm_api dataset with web search for a specific OpenAI model
+python src/evaluate_transforms.py --openai-model gpt-5.2-codex-mini --dataset llm_api --web-search yes
 
 # Run with all three providers using custom models
 python src/evaluate_transforms.py \
@@ -132,7 +132,7 @@ python src/evaluate_transforms.py \
   --google-model gemini-3-flash-preview \
   --anthropic-model claude-haiku-4-5 \
   --dataset etl \
-  --dataset llm_embedding
+  --dataset llm_api
 ```
 
 ## Project Structure
@@ -161,7 +161,7 @@ transform-evals/
 │       └── results.py                 # Results processing and display
 ├── data/
 │   ├── elt_code_eval_dataset.json      # ETL dataset
-│   └── etl_llm_embedding_dataset.json  # LLM embedding dataset
+│   └── llm_api_dataset.json            # LLM API dataset
 ├── results/                            # Evaluation results (JSON files)
 ├── env.example                         # Environment variables template
 └── README.md                           # This file

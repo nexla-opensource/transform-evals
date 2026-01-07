@@ -90,10 +90,10 @@ def main():
         epilog=f"""
 Examples:
   # Run both datasets with no web search for gpt-5.1-codex-mini
-  python {sys.argv[0]} --openai-model gpt-5.1-codex-mini --dataset etl --dataset llm_embedding --web-search no
+  python {sys.argv[0]} --openai-model gpt-5.1-codex-mini --dataset etl --dataset llm_api --web-search no
 
-  # Run llm_embedding dataset with web search for gpt-5.2-codex-mini
-  python {sys.argv[0]} --openai-model gpt-5.2-codex-mini --dataset llm_embedding --web-search yes
+  # Run llm_api dataset with web search for gpt-5.2-codex-mini
+  python {sys.argv[0]} --openai-model gpt-5.2-codex-mini --dataset llm_api --web-search yes
 
 Available datasets: {', '.join(DATASETS.keys())}
         """
@@ -183,7 +183,7 @@ Available datasets: {', '.join(DATASETS.keys())}
             logger.warning(f"Dataset file '{dataset_file}' not found, skipping {dataset_name}")
             continue
         
-        dataset_web_search = enable_web_search and (dataset_name == "llm_embedding")
+        dataset_web_search = enable_web_search and (dataset_name == "llm_api")
         
         logger.info(f"\n{'='*100}")
         logger.info(f"Evaluating dataset: {dataset_name.upper()}")

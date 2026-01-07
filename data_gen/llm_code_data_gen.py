@@ -608,7 +608,7 @@ Respond with JSON: {{"priority": "low|medium|high|critical", "reasoning": "brief
     }
 ]
 
-output_file = Path("etl_llm_embedding_dataset.json")
+output_file = Path("llm_api_dataset.json")
 with open(output_file, "w") as f:
     json.dump(dataset, f, indent=2)
 

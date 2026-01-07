@@ -8,8 +8,8 @@ _script_dir = os.path.dirname(os.path.abspath(__file__))
 _base_dir = os.path.dirname(_script_dir)
 
 DATASETS = {
-    "etl": os.path.join(_base_dir, "data", "elt_code_eval_dataset.json"),
-    "llm_embedding": os.path.join(_base_dir, "data", "etl_llm_embedding_dataset.json")
+    "etl": os.path.join(_base_dir, "data", "etl_dataset.json"),
+    "llm_api": os.path.join(_base_dir, "data", "llm_api_dataset.json")
 }
 
 DEFAULT_GENERATOR_MODELS = [

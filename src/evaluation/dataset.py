@@ -144,7 +144,7 @@ async def evaluate_all_datasets_mixed_async(enable_web_search: bool = True) -> D
             evaluate_test_case_all_models(
                 test_case, 
                 batch_start_idx + j,
-                enable_web_search=(enable_web_search and test_case.get("_dataset") == "llm_embedding")
+                enable_web_search=(enable_web_search and test_case.get("_dataset") == "llm_api")
             )
             for j, test_case in enumerate(batch)
         ]
