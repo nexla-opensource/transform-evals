@@ -1,0 +1,266 @@
+[
+  {
+    "task": "Generate embeddings for product descriptions using OpenAI's text-embedding-3-small model. The output should include a 'description_embedding' field (1536 dimensions) and 'embedding_model' field.",
+    "input": {
+      "product_id": "P001",
+      "name": "Wireless Bluetooth Headphones",
+      "description": "Premium over-ear headphones with active noise cancellation and 30-hour battery life"
+    },
+    "output": {
+      "product_id": "P001",
+      "name": "Wireless Bluetooth Headphones",
+      "description": "Premium over-ear headphones with active noise cancellation and 30-hour battery life",
+      "description_embedding": "[vector of 1536 dimensions]",
+      "embedding_model": "text-embedding-3-small"
+    },
+    "ground_truth_code": "def transform(data):\n    import openai\n    \n    result = data.copy()\n    \n    if 'description' in result and result['description']:\n        response = openai.embeddings.create(\n            input=result['description'],\n            model=\"text-embedding-3-small\"\n        )\n        result['description_embedding'] = response.data[0].embedding\n        result['embedding_model'] = \"text-embedding-3-small\"\n    \n    return result"
+  },
+  {
+    "task": "Generate embeddings for customer reviews using Cohere embed-english-v3.0 model with input_type='search_document'. The output should include a 'review_embedding' field (1024 dimensions) and 'embedding_model' field.",
+    "input": {
+      "review_id": "R001",
+      "customer_name": "John Doe",
+      "review_text": "This product exceeded my expectations. Great quality and fast shipping!"
+    },
+    "output": {
+      "review_id": "R001",
+      "customer_name": "John Doe",
+      "review_text": "This product exceeded my expectations. Great quality and fast shipping!",
+      "review_embedding": "[vector of 1024 dimensions]",
+      "embedding_model": "embed-english-v3.0"
+    },
+    "ground_truth_code": "def transform(data):\n    import cohere\n    \n    result = data.copy()\n    co = cohere.Client(api_key='YOUR_API_KEY')\n    \n    if 'review_text' in result and result['review_text']:\n        response = co.embed(\n            texts=[result['review_text']],\n            model='embed-english-v3.0',\n            input_type='search_document'\n        )\n        result['review_embedding'] = response.embeddings[0]\n        result['embedding_model'] = \"embed-english-v3.0\"\n    \n    return result"
+  },
+  {
+    "task": "Generate embeddings for support tickets using HuggingFace sentence-transformers model 'all-MiniLM-L6-v2'. The output should include a 'description_embedding' field (384 dimensions) and 'embedding_model' field.",
+    "input": {
+      "ticket_id": "T001",
+      "subject": "Login Issues",
+      "description": "Unable to login to my account. Getting error message: Invalid credentials"
+    },
+    "output": {
+      "ticket_id": "T001",
+      "subject": "Login Issues",
+      "description": "Unable to login to my account. Getting error message: Invalid credentials",
+      "description_embedding": "[vector of 384 dimensions]",
+      "embedding_model": "all-MiniLM-L6-v2"
+    },
+    "ground_truth_code": "def transform(data):\n    from sentence_transformers import SentenceTransformer\n    \n    result = data.copy()\n    model = SentenceTransformer('all-MiniLM-L6-v2')\n    \n    if 'description' in result and result['description']:\n        embedding = model.encode(result['description'])\n        result['description_embedding'] = embedding.tolist()\n        result['embedding_model'] = \"all-MiniLM-L6-v2\"\n    \n    return result"
+  },
+  {
+    "task": "Combine multiple text fields (title, abstract, keywords) with '. ' separator and generate embeddings using OpenAI's text-embedding-3-small model. The output should include 'combined_text', 'combined_embedding' (1536 dimensions), and 'embedding_model' fields.",
+    "input": {
+      "article_id": "A001",
+      "title": "The Future of AI in Healthcare",
+      "abstract": "This article explores emerging AI technologies transforming medical diagnosis and treatment.",
+      "keywords": "artificial intelligence, healthcare, medical diagnosis"
+    },
+    "output": {
+      "article_id": "A001",
+      "title": "The Future of AI in Healthcare",
+      "abstract": "This article explores emerging AI technologies transforming medical diagnosis and treatment.",
+      "keywords": "artificial intelligence, healthcare, medical diagnosis",
+      "combined_text": "The Future of AI in Healthcare. This article explores emerging AI technologies transforming medical diagnosis and treatment. artificial intelligence, healthcare, medical diagnosis",
+      "combined_embedding": "[vector of 1536 dimensions]",
+      "embedding_model": "text-embedding-3-small"
+    },
+    "ground_truth_code": "def transform(data):\n    import openai\n    \n    result = data.copy()\n    \n    # Combine multiple text fields\n    text_parts = []\n    for field in ['title', 'abstract', 'keywords']:\n        if field in result and result[field]:\n            text_parts.append(result[field])\n    \n    combined_text = '. '.join(text_parts)\n    result['combined_text'] = combined_text\n    \n    # Generate embedding\n    response = openai.embeddings.create(\n        input=combined_text,\n        model=\"text-embedding-3-small\"\n    )\n    result['combined_embedding'] = response.data[0].embedding\n    result['embedding_model'] = \"text-embedding-3-small\"\n    \n    return result"
+  },
+  {
+    "task": "Generate embeddings for job postings using Voyage AI voyage-2 model with input_type='document'. The output should include 'description_embedding' field (1024 dimensions) and 'embedding_model' field.",
+    "input": {
+      "job_id": "J001",
+      "title": "Senior Data Engineer",
+      "description": "We are seeking an experienced data engineer to build and maintain our data infrastructure. Must have 5+ years of experience with Python, SQL, and cloud platforms."
+    },
+    "output": {
+      "job_id": "J001",
+      "title": "Senior Data Engineer",
+      "description": "We are seeking an experienced data engineer to build and maintain our data infrastructure. Must have 5+ years of experience with Python, SQL, and cloud platforms.",
+      "description_embedding": "[vector of 1024 dimensions]",
+      "embedding_model": "voyage-2"
+    },
+    "ground_truth_code": "def transform(data):\n    import voyageai\n    \n    result = data.copy()\n    vo = voyageai.Client(api_key='YOUR_API_KEY')\n    \n    if 'description' in result and result['description']:\n        response = vo.embed(\n            [result['description']],\n            model=\"voyage-2\",\n            input_type=\"document\"\n        )\n        result['description_embedding'] = response.embeddings[0]\n        result['embedding_model'] = \"voyage-2\"\n    \n    return result"
+  },
+  {
+    "task": "Generate embeddings for blog posts using Jina AI jina-embeddings-v2-base-en model via API. The output should include 'content_embedding' field (768 dimensions) and 'embedding_model' field.",
+    "input": {
+      "post_id": "B001",
+      "title": "10 Tips for Better Python Code",
+      "content": "Writing clean, maintainable Python code is essential for any developer. In this post, we'll explore best practices including proper naming conventions, effective use of list comprehensions, and the importance of documentation."
+    },
+    "output": {
+      "post_id": "B001",
+      "title": "10 Tips for Better Python Code",
+      "content": "Writing clean, maintainable Python code is essential for any developer. In this post, we'll explore best practices including proper naming conventions, effective use of list comprehensions, and the importance of documentation.",
+      "content_embedding": "[vector of 768 dimensions]",
+      "embedding_model": "jina-embeddings-v2-base-en"
+    },
+    "ground_truth_code": "def transform(data):\n    import requests\n    \n    result = data.copy()\n    \n    if 'content' in result and result['content']:\n        response = requests.post(\n            'https://api.jina.ai/v1/embeddings',\n            headers={\n                'Content-Type': 'application/json',\n                'Authorization': 'Bearer YOUR_API_KEY'\n            },\n            json={\n                'input': [result['content']],\n                'model': 'jina-embeddings-v2-base-en'\n            }\n        )\n        embedding_data = response.json()\n        result['content_embedding'] = embedding_data['data'][0]['embedding']\n        result['embedding_model'] = \"jina-embeddings-v2-base-en\"\n    \n    return result"
+  },
+  {
+    "task": "Generate embeddings for multi-lingual content using Jina AI jina-embeddings-v2-base-multilingual model via API. The output should include 'text_embedding' field (768 dimensions) and 'embedding_model' field.",
+    "input": {
+      "message_id": "M002",
+      "language": "es",
+      "text": "Hola, estoy interesado en obtener m\u00e1s informaci\u00f3n sobre sus productos y servicios. \u00bfPodr\u00edan enviarme un cat\u00e1logo?"
+    },
+    "output": {
+      "message_id": "M002",
+      "language": "es",
+      "text": "Hola, estoy interesado en obtener m\u00e1s informaci\u00f3n sobre sus productos y servicios. \u00bfPodr\u00edan enviarme un cat\u00e1logo?",
+      "text_embedding": "[vector of 768 dimensions]",
+      "embedding_model": "jina-embeddings-v2-base-multilingual"
+    },
+    "ground_truth_code": "def transform(data):\n    import requests\n    \n    result = data.copy()\n    \n    if 'text' in result and result['text']:\n        response = requests.post(\n            'https://api.jina.ai/v1/embeddings',\n            headers={\n                'Content-Type': 'application/json',\n                'Authorization': 'Bearer YOUR_API_KEY'\n            },\n            json={\n                'input': [result['text']],\n                'model': 'jina-embeddings-v2-base-multilingual'\n            }\n        )\n        embedding_data = response.json()\n        result['text_embedding'] = embedding_data['data'][0]['embedding']\n        result['embedding_model'] = \"jina-embeddings-v2-base-multilingual\"\n    \n    return result"
+  },
+  {
+    "task": "Generate summary for customer feedback using OpenAI GPT-4.",
+    "input": {
+      "feedback_id": "F001",
+      "customer_feedback": "I've been using this product for three months now and I'm really impressed with the build quality. The battery life is excellent, lasting me through two full days of heavy use. However, I did notice that the Bluetooth connection sometimes drops when I'm more than 20 feet away from my phone. The customer service team was very helpful when I reached out about this issue. Overall, I would definitely recommend this to anyone looking for a reliable device in this price range."
+    },
+    "output": {
+      "feedback_id": "F001",
+      "customer_feedback": "I've been using this product for three months now and I'm really impressed with the build quality. The battery life is excellent, lasting me through two full days of heavy use. However, I did notice that the Bluetooth connection sometimes drops when I'm more than 20 feet away from my phone. The customer service team was very helpful when I reached out about this issue. Overall, I would definitely recommend this to anyone looking for a reliable device in this price range.",
+      "summary": "Customer praises excellent build quality and battery life but notes occasional Bluetooth connectivity issues beyond 20 feet. Positive experience with customer service. Recommends product overall."
+    },
+    "ground_truth_code": "def transform(data):\n    import openai\n    \n    result = data.copy()\n    \n    if 'customer_feedback' in result and result['customer_feedback']:\n        response = openai.chat.completions.create(\n            model=\"gpt-4\",\n            messages=[\n                {\"role\": \"system\", \"content\": \"You are a helpful assistant that summarizes customer feedback concisely.\"},\n                {\"role\": \"user\", \"content\": f\"Summarize this customer feedback in 2-3 sentences: {result['customer_feedback']}\"}\n            ],\n            temperature=0.3,\n            max_tokens=150\n        )\n        result['summary'] = response.choices[0].message.content.strip()\n    \n    return result"
+  },
+  {
+    "task": "Generate summary for news articles using Anthropic Claude.",
+    "input": {
+      "article_id": "N001",
+      "article_text": "Scientists at MIT have developed a new battery technology that could revolutionize electric vehicles. The breakthrough involves using solid-state electrolytes instead of liquid ones, which significantly improves energy density and safety. Early tests show the batteries can charge to 80% capacity in just 15 minutes and last for over 500,000 miles. The research team expects commercial production to begin within the next three years, pending further testing and regulatory approval."
+    },
+    "output": {
+      "article_id": "N001",
+      "article_text": "Scientists at MIT have developed a new battery technology that could revolutionize electric vehicles. The breakthrough involves using solid-state electrolytes instead of liquid ones, which significantly improves energy density and safety. Early tests show the batteries can charge to 80% capacity in just 15 minutes and last for over 500,000 miles. The research team expects commercial production to begin within the next three years, pending further testing and regulatory approval.",
+      "summary": "MIT researchers have created a solid-state battery technology for EVs that charges faster and lasts longer than current options, with commercial production expected in three years."
+    },
+    "ground_truth_code": "def transform(data):\n    import anthropic\n    \n    result = data.copy()\n    client = anthropic.Anthropic(api_key='YOUR_API_KEY')\n    \n    if 'article_text' in result and result['article_text']:\n        message = client.messages.create(\n            model=\"claude-3-5-sonnet-20241022\",\n            max_tokens=150,\n            messages=[\n                {\"role\": \"user\", \"content\": f\"Summarize this article in one concise sentence: {result['article_text']}\"}\n            ]\n        )\n        result['summary'] = message.content[0].text.strip()\n    \n    return result"
+  },
+  {
+    "task": "Classify sentiment of product reviews as positive, negative, or neutral using OpenAI.",
+    "input": {
+      "review_id": "R002",
+      "review_text": "This product is absolutely terrible. It broke after just two weeks of normal use. Complete waste of money. Would not recommend to anyone."
+    },
+    "output": {
+      "review_id": "R002",
+      "review_text": "This product is absolutely terrible. It broke after just two weeks of normal use. Complete waste of money. Would not recommend to anyone.",
+      "sentiment": "negative",
+      "confidence": 0.95
+    },
+    "ground_truth_code": "def transform(data):\n    import openai\n    import json\n    \n    result = data.copy()\n    \n    if 'review_text' in result and result['review_text']:\n        response = openai.chat.completions.create(\n            model=\"gpt-4\",\n            messages=[\n                {\"role\": \"system\", \"content\": \"You are a sentiment analysis expert. Classify the sentiment as positive, negative, or neutral. Respond with JSON: {\"sentiment\": \"positive|negative|neutral\", \"confidence\": 0.0-1.0}\"},\n                {\"role\": \"user\", \"content\": result['review_text']}\n            ],\n            temperature=0,\n            response_format={\"type\": \"json_object\"}\n        )\n        sentiment_data = json.loads(response.choices[0].message.content)\n        result['sentiment'] = sentiment_data['sentiment']\n        result['confidence'] = sentiment_data['confidence']\n    \n    return result"
+  },
+  {
+    "task": "Classify support ticket priority (low, medium, high, critical) using Claude.",
+    "input": {
+      "ticket_id": "T002",
+      "subject": "System Down - Production Database Unreachable",
+      "description": "Our entire production database has been unreachable for the past 15 minutes. All customer-facing services are down. This is affecting approximately 50,000 active users."
+    },
+    "output": {
+      "ticket_id": "T002",
+      "subject": "System Down - Production Database Unreachable",
+      "description": "Our entire production database has been unreachable for the past 15 minutes. All customer-facing services are down. This is affecting approximately 50,000 active users.",
+      "priority": "critical",
+      "reasoning": "Complete production outage affecting large user base requires immediate attention"
+    },
+    "ground_truth_code": "def transform(data):\n    import anthropic\n    import json\n    \n    result = data.copy()\n    client = anthropic.Anthropic(api_key='YOUR_API_KEY')\n    \n    if 'description' in result and result['description']:\n        prompt = f\"\"\"Classify the priority of this support ticket as: low, medium, high, or critical.\n        \nSubject: {result.get('subject', '')}\nDescription: {result['description']}\n\nRespond with JSON: {{\"priority\": \"low|medium|high|critical\", \"reasoning\": \"brief explanation\"}}\"\"\"\n        \n        message = client.messages.create(\n            model=\"claude-3-5-sonnet-20241022\",\n            max_tokens=200,\n            messages=[{\"role\": \"user\", \"content\": prompt}]\n        )\n        \n        # Extract JSON from response\n        response_text = message.content[0].text\n        priority_data = json.loads(response_text)\n        result['priority'] = priority_data['priority']\n        result['reasoning'] = priority_data['reasoning']\n    \n    return result"
+  },
+  {
+    "task": "Classify customer intent from support messages (billing, technical, general_inquiry, complaint).",
+    "input": {
+      "message_id": "M001",
+      "message_text": "Hi, I noticed an extra charge of $29.99 on my last invoice. I don't recall authorizing this. Can you help me understand what this charge is for?"
+    },
+    "output": {
+      "message_id": "M001",
+      "message_text": "Hi, I noticed an extra charge of $29.99 on my last invoice. I don't recall authorizing this. Can you help me understand what this charge is for?",
+      "intent": "billing",
+      "sub_intent": "disputed_charge"
+    },
+    "ground_truth_code": "def transform(data):\n    import openai\n    import json\n    \n    result = data.copy()\n    \n    if 'message_text' in result and result['message_text']:\n        response = openai.chat.completions.create(\n            model=\"gpt-4\",\n            messages=[\n                {\"role\": \"system\", \"content\": \"Classify customer intent: billing, technical, general_inquiry, or complaint. Also provide sub_intent for more specific categorization. Respond with JSON.\"},\n                {\"role\": \"user\", \"content\": result['message_text']}\n            ],\n            temperature=0,\n            response_format={\"type\": \"json_object\"}\n        )\n        intent_data = json.loads(response.choices[0].message.content)\n        result['intent'] = intent_data.get('intent')\n        result['sub_intent'] = intent_data.get('sub_intent')\n    \n    return result"
+  },
+  {
+    "task": "Classify content moderation categories (safe, spam, harassment, hate_speech, violence).",
+    "input": {
+      "content_id": "C001",
+      "user_content": "Check out this amazing deal! Click here now to claim your FREE iPhone! Limited time offer! bit.ly/notascam"
+    },
+    "output": {
+      "content_id": "C001",
+      "user_content": "Check out this amazing deal! Click here now to claim your FREE iPhone! Limited time offer! bit.ly/notascam",
+      "moderation_category": "spam",
+      "action_required": "remove",
+      "confidence": 0.92
+    },
+    "ground_truth_code": "def transform(data):\n    import openai\n    import json\n    \n    result = data.copy()\n    \n    if 'user_content' in result and result['user_content']:\n        response = openai.chat.completions.create(\n            model=\"gpt-4\",\n            messages=[\n                {\"role\": \"system\", \"content\": \"You are a content moderation system. Classify content as: safe, spam, harassment, hate_speech, or violence. Provide action_required: none, flag, or remove. Include confidence score. Respond with JSON.\"},\n                {\"role\": \"user\", \"content\": result['user_content']}\n            ],\n            temperature=0,\n            response_format={\"type\": \"json_object\"}\n        )\n        moderation_data = json.loads(response.choices[0].message.content)\n        result['moderation_category'] = moderation_data['moderation_category']\n        result['action_required'] = moderation_data['action_required']\n        result['confidence'] = moderation_data['confidence']\n    \n    return result"
+  },
+  {
+    "task": "Generate embeddings using OpenAI text-embedding-3-small (1536 dimensions) and classify industry sector from company descriptions using GPT-4. Output should include 'description_embedding', 'industry_sector', and 'sub_sectors' fields.",
+    "input": {
+      "company_id": "CO001",
+      "company_description": "We develop cloud-based software solutions for healthcare providers, including electronic health records, patient scheduling, and telemedicine platforms."
+    },
+    "output": {
+      "company_id": "CO001",
+      "company_description": "We develop cloud-based software solutions for healthcare providers, including electronic health records, patient scheduling, and telemedicine platforms.",
+      "description_embedding": "[vector of 1536 dimensions]",
+      "industry_sector": "healthcare_technology",
+      "sub_sectors": [
+        "healthcare",
+        "saas",
+        "telemedicine"
+      ]
+    },
+    "ground_truth_code": "def transform(data):\n    import openai\n    import json\n    \n    result = data.copy()\n    \n    if 'company_description' in result and result['company_description']:\n        # Generate embedding\n        embed_response = openai.embeddings.create(\n            input=result['company_description'],\n            model=\"text-embedding-3-small\"\n        )\n        result['description_embedding'] = embed_response.data[0].embedding\n        \n        # Classify industry\n        classify_response = openai.chat.completions.create(\n            model=\"gpt-4\",\n            messages=[\n                {\"role\": \"system\", \"content\": \"Classify the company's primary industry sector and list relevant sub-sectors. Respond with JSON: {\"industry_sector\": \"sector_name\", \"sub_sectors\": [\"list\", \"of\", \"subsectors\"]}\"},\n                {\"role\": \"user\", \"content\": result['company_description']}\n            ],\n            temperature=0,\n            response_format={\"type\": \"json_object\"}\n        )\n        classification = json.loads(classify_response.choices[0].message.content)\n        result['industry_sector'] = classification['industry_sector']\n        result['sub_sectors'] = classification['sub_sectors']\n    \n    return result"
+  },
+  {
+    "task": "Use GPT-4 to generate summary and classify research topics, then generate embeddings using OpenAI text-embedding-3-small (1536 dimensions). Output should include 'summary', 'research_topics', and 'abstract_embedding' fields.",
+    "input": {
+      "paper_id": "P001",
+      "title": "Attention Is All You Need",
+      "abstract": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely."
+    },
+    "output": {
+      "paper_id": "P001",
+      "title": "Attention Is All You Need",
+      "abstract": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.",
+      "summary": "Introduces the Transformer architecture, a novel neural network based purely on attention mechanisms, eliminating the need for recurrent or convolutional layers.",
+      "research_topics": [
+        "deep_learning",
+        "natural_language_processing",
+        "neural_architecture"
+      ],
+      "abstract_embedding": "[vector of 1536 dimensions]"
+    },
+    "ground_truth_code": "def transform(data):\n    import openai\n    import json\n    \n    result = data.copy()\n    \n    if 'abstract' in result and result['abstract']:\n        # Generate summary\n        summary_response = openai.chat.completions.create(\n            model=\"gpt-4\",\n            messages=[\n                {\"role\": \"system\", \"content\": \"Summarize research paper abstracts in one clear sentence.\"},\n                {\"role\": \"user\", \"content\": result['abstract']}\n            ],\n            temperature=0.3,\n            max_tokens=100\n        )\n        result['summary'] = summary_response.choices[0].message.content.strip()\n        \n        # Classify topics\n        topic_response = openai.chat.completions.create(\n            model=\"gpt-4\",\n            messages=[\n                {\"role\": \"system\", \"content\": \"Identify the main research topics from this abstract. Respond with JSON: {\"research_topics\": [\"topic1\", \"topic2\", ...]}\"},\n                {\"role\": \"user\", \"content\": result['abstract']}\n            ],\n            temperature=0,\n            response_format={\"type\": \"json_object\"}\n        )\n        topics = json.loads(topic_response.choices[0].message.content)\n        result['research_topics'] = topics['research_topics']\n        \n        # Generate embedding\n        embed_response = openai.embeddings.create(\n            input=result['abstract'],\n            model=\"text-embedding-3-small\"\n        )\n        result['abstract_embedding'] = embed_response.data[0].embedding\n    \n    return result"
+  },
+  {
+    "task": "Use GPT-4 to extract key entities (parties, date, contract_type, duration, rate) and generate summary from legal documents, then create embeddings using OpenAI text-embedding-3-small (1536 dimensions). Output should include 'entities', 'summary', and 'document_embedding' fields.",
+    "input": {
+      "document_id": "D001",
+      "document_text": "This Agreement is entered into as of January 15, 2024, by and between Acme Corporation, a Delaware corporation ('Company'), and John Smith, an individual residing in California ('Consultant'). The Consultant agrees to provide software development services for a period of 6 months at a rate of $150 per hour, not to exceed 40 hours per week. Payment shall be made monthly within 15 days of invoice receipt."
+    },
+    "output": {
+      "document_id": "D001",
+      "document_text": "This Agreement is entered into as of January 15, 2024, by and between Acme Corporation, a Delaware corporation ('Company'), and John Smith, an individual residing in California ('Consultant'). The Consultant agrees to provide software development services for a period of 6 months at a rate of $150 per hour, not to exceed 40 hours per week. Payment shall be made monthly within 15 days of invoice receipt.",
+      "summary": "Service agreement between Acme Corporation and consultant John Smith for 6-month software development engagement at $150/hour with monthly payment terms.",
+      "entities": {
+        "parties": [
+          "Acme Corporation",
+          "John Smith"
+        ],
+        "date": "2024-01-15",
+        "contract_type": "consulting_agreement",
+        "duration": "6 months",
+        "rate": "$150/hour"
+      },
+      "document_embedding": "[vector of 1536 dimensions]"
+    },
+    "ground_truth_code": "def transform(data):\n    import openai\n    import json\n    \n    result = data.copy()\n    \n    if 'document_text' in result and result['document_text']:\n        # Extract entities\n        entity_response = openai.chat.completions.create(\n            model=\"gpt-4\",\n            messages=[\n                {\"role\": \"system\", \"content\": \"Extract key entities from legal documents. Respond with JSON containing: parties, date, contract_type, duration, rate, and other relevant fields.\"},\n                {\"role\": \"user\", \"content\": result['document_text']}\n            ],\n            temperature=0,\n            response_format={\"type\": \"json_object\"}\n        )\n        result['entities'] = json.loads(entity_response.choices[0].message.content)\n        \n        # Generate summary\n        summary_response = openai.chat.completions.create(\n            model=\"gpt-4\",\n            messages=[\n                {\"role\": \"system\", \"content\": \"Summarize legal documents in one clear sentence.\"},\n                {\"role\": \"user\", \"content\": result['document_text']}\n            ],\n            temperature=0.3,\n            max_tokens=100\n        )\n        result['summary'] = summary_response.choices[0].message.content.strip()\n        \n        # Generate embedding\n        embed_response = openai.embeddings.create(\n            input=result['document_text'],\n            model=\"text-embedding-3-small\"\n        )\n        result['document_embedding'] = embed_response.data[0].embedding\n    \n    return result"
+  }
+]
